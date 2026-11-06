@@ -1,6 +1,6 @@
 # Trabajo-Consulta-1 Funciones Anónimas
 
-**Parte 1: Explorar: la programación funcional en el mundo real**
+*** Parte 1: Explorar: la programación funcional en el mundo real ***
 
 Caso 1: Apache Spark
 
