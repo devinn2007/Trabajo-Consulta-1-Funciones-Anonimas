@@ -229,7 +229,7 @@ from functools import reduce
 valor_total = reduce(lambda acc, p: acc + p.precio * p.stock, productos, 0.0)
 ```
 
-Salida de las tres versiones: El valor numérico total 45717.0 calculado de forma idéntica en los tres lenguajes.
+Salida de las tres versiones: El valor numérico total 54542.0 calculado de forma idéntica en los tres lenguajes.
 
 ## Parte 4: Ampliar: cuatro operaciones nuevas
 
