@@ -49,7 +49,7 @@ videoStream
 
 Explicación: Aquí vemos tres funciones anónimas. La función video -> video.getRating() >= 4.0 se pasa a filter para dejar pasar solo los videos con buena calificación. Luego, video -> video.getMetadata() extrae la información del video. Cada lambda es un bloque de comportamiento independiente inyectado en la tubería de datos asíncrona.
 
-**Parte 2: Entender: ¿qué es una función anónima?**
+## Parte 2: Entender: ¿qué es una función anónima?
 
 ¿Qué es una función anónima y de dónde viene el nombre lambda?
 
