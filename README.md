@@ -318,3 +318,27 @@ Explicación de cada paso:
 
 3. partition: Esta operación nueva recibe la lista ya ordenada y la corta en dos listas distintas agrupadas conjuntamente. La primera contiene los que cuestan cincuenta o más y la segunda los menores a cincuenta. Al aplicarse al final, ambas sublistas resultantes heredan intacto el orden establecido en el paso anterior.
 
+
+## Parte 5: Comparar y concluir
+
+### 5.1 Scala, Java y Python frente a frente
+
+| Criterio | Scala | Java | Python |
+| :--- | :--- | :--- | :--- |
+| **Sintaxis de la lambda** | `p => p.precio * 0.90` | `p -> p.getPrecio() * 0.90` | `lambda p: p.precio * 0.90` |
+| **Cómo se declara el tipo** | Inferencia automática fuerte o mediante declaración explícita opcional `(p: Producto) =>`. | Usa interfaces funcionales de tipado estricto obligatorias. | Tipado dinámico nativo por lo que no requiere ni admite declarar el tipo en la lambda. |
+| **Operaciones con listas disponibles** | Nativas y directas sobre la colección mediante métodos integrados. | Requiere transiciones abriendo un flujo con stream y recolectando al final. | Uso de funciones de orden superior del sistema envolviendo la lista. |
+| **Restricción del lenguaje** | Orientado fuertemente a la inmutabilidad sin restricciones severas de bloque. | Las variables externas capturadas deben ser constantes o efectivamente finales. | Las lambdas están limitadas a una sola expresión en línea sin permitir bloques de código complejos. |
+| **Legibilidad** | Excelente y muy limpia por el encadenamiento directo de izquierda a derecha. | Verbosa debido al código de andamiaje extra requerido por la interfaz de flujos. | Muy matemática pero el anidamiento de funciones altera el orden natural de lectura. |
+
+**¿En qué lenguaje fue más natural resolver los problemas?**
+Scala resultó ser el más natural. Al tener las funciones de orden superior integradas directamente como métodos de la propia colección, el flujo de pensamiento del programador se plasma en el código de izquierda a derecha de forma ininterrumpida y lógica.
+
+**¿En qué tipo de problema encontraste más diferencias entre lenguajes y por qué?**
+En los problemas de Transformación y Selección. La diferencia principal es el andamiaje requerido. En Scala el llamado es directo e inmediato sobre la lista. En Java existe una obligación técnica de abrir un flujo de datos asíncrono y luego cerrarlo para volver a formar una lista clásica, lo cual incrementa significativamente la cantidad de código requerido para una operación analítica simple. En Python la diferencia radica en que se usan funciones externas que envuelven la operación, obligando a leer la instrucción desde adentro hacia afuera.
+
+### 5.2 Conclusión
+
+Las funciones anónimas son la pieza fundamental en la programación declarativa sobre colecciones de datos, ya que nos permiten enfocarnos en el objetivo final del problema en lugar de programar los pasos mecánicos manuales para recorrer los elementos. Al delegar la lógica de iteración y los condicionales internos a las operaciones de orden superior, nuestro código se vuelve sustancialmente menos propenso a errores humanos de asignación de variables o desbordamiento de índices.
+
+Esta capacidad de abstracción y seguridad matemática es la razón principal por la cual herramientas empresariales como Apache Spark basan su motor de procesamiento de grandes volúmenes de datos en estas funciones. Tal como se analizó en la primera parte de este documento, Spark toma la función anónima inyectada por el desarrollador y se encarga por detrás de enviarla a cientos de servidores para ejecutarse en paralelo de forma segura, garantizando que el usuario solucione problemas masivos escribiendo exactamente el mismo nivel de código limpio que usaría para procesar una lista pequeña en su propia computadora.
