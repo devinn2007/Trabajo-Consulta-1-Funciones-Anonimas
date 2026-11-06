@@ -2,7 +2,7 @@
 
 ## Parte 1: Explorar: la programación funcional en el mundo real
 
-Caso 1: Apache Spark
+**Caso 1: Apache Spark**
 
 Problema que resuelve: Spark necesita procesar terabytes de datos distribuidos simultáneamente en clústeres de cientos de computadoras. El problema de usar lenguajes tradicionales aquí es que compartir variables que cambian de estado entre diferentes servidores genera errores de concurrencia y bloqueos.
 
@@ -51,7 +51,7 @@ Explicación: Aquí vemos tres funciones anónimas. La función video -> video.g
 
 ## Parte 2: Entender: ¿qué es una función anónima?
 
-¿Qué es una función anónima y de dónde viene el nombre lambda?
+**¿Qué es una función anónima y de dónde viene el nombre lambda?**
 
 Una función anónima es un bloque de código que toma parámetros, realiza una operación y devuelve un resultado, pero que no tiene un nombre o identificador formal asociado en el código. El nombre lambda proviene del Cálculo Lambda, un sistema matemático formal creado por el matemático Alonzo Church en la década de 1930 para estudiar la computabilidad y definir las funciones de manera pura, mucho antes de que existieran las computadoras modernas.
 
@@ -59,7 +59,7 @@ Una función anónima es un bloque de código que toma parámetros, realiza una 
 val sumar = (x: Int, y: Int) => x + y
 ```
 
-¿En qué se diferencia de una función nombrada?
+**¿En qué se diferencia de una función nombrada?**
 
 La principal diferencia es la estructura y el propósito. Una función nombrada se define con una palabra clave específica y un identificador para ser reutilizada en múltiples partes del programa. Una función anónima se define directamente en el lugar donde se necesita, ideal para comportamientos de un solo uso.
 
@@ -73,7 +73,7 @@ def esParNombrada(numero: Int): Boolean = {
 val esParAnonima = (numero: Int) => numero % 2 == 0
 ```
 
-¿Qué significa que las funciones sean ciudadanos de primera clase? ¿Por qué eso permite pasar una lambda a map o filter?
+**¿Qué significa que las funciones sean ciudadanos de primera clase? ¿Por qué eso permite pasar una lambda a map o filter?**
 
 Que una función sea un ciudadano de primera clase significa que el lenguaje de programación la trata exactamente igual que a un dato común, como un texto o un número. Puedes guardarla en una variable, devolverla como resultado de otra función y, lo más importante, pasarla como parámetro.
 
@@ -84,7 +84,7 @@ val numeros = List(1, 2, 3, 4)
 val decenas = numeros.map(x => x * 10)
 ```
 
-¿Qué es un closure?
+**¿Qué es un closure?**
 
 Un closure es una función anónima que atrapa o captura variables que fueron definidas fuera de su propio cuerpo, permitiendo que la función siga utilizando esos valores externos incluso si el contexto original donde se crearon ya terminó. La lambda encapsula tanto el código a ejecutar como el entorno en el que vive.
 
@@ -96,3 +96,225 @@ val calcularPrecioFinal = (precioBase: Double) => precioBase + (precioBase * iva
 
 println(calcularPrecioFinal(100.0))
 ```
+
+## Parte 3: Aplicar: ¿en qué problemas sirven las funciones anónimas?
+
+### 3.1 Catálogo de tipos de problemas
+
+**Lista de objetos base utilizada para todos los ejemplos**
+
+Esta misma colección de diez productos tecnológicos se definió en las soluciones de Scala, Java y Python para mantener la consistencia de los datos y hacer comparaciones exactas.
+
+``` sacala
+case class Producto(nombre: String, categoria: String, precio: Double, stock: Int)
+
+val productos = List(
+  Producto("Laptop X", "Laptops", 1200.0, 5),
+  Producto("Laptop Y", "Laptops", 850.0, 15),
+  Producto("iPhone 14", "Smartphones", 999.0, 8),
+  Producto("Galaxy S23", "Smartphones", 900.0, 12),
+  Producto("Pixel 7", "Smartphones", 600.0, 0),
+  Producto("Audífonos Sony", "Accesorios", 250.0, 30),
+  Producto("Cargador USB-C", "Accesorios", 25.0, 100),
+  Producto("Monitor LG", "Periféricos", 300.0, 7),
+  Producto("Teclado Mecánico", "Periféricos", 120.0, 20),
+  Producto("Mouse Inalámbrico", "Periféricos", 50.0, 50)
+)
+```
+
+
+**1. Selección**
+
+Situación real: Una tienda en línea necesita detectar y bloquear los productos que se han quedado sin stock en su base de datos para evitar compras fallidas por parte de los clientes.
+
+Scala: 
+
+``` sacala
+val sinStock = productos.filter(p => p.stock == 0)
+```
+
+Java:
+
+``` java
+List<Producto> sinStock = productos.stream()
+    .filter(p -> p.getStock() == 0)
+    .collect(Collectors.toList());
+```
+
+Python
+
+``` python
+sin_stock = list(filter(lambda p: p.stock == 0, productos))
+```
+
+Salida de las tres versiones: Una lista con un solo elemento correspondiente al teléfono Pixel 7.
+
+
+**2. Transformación**
+
+Situación real: Por época navideña la tienda decide aplicar un descuento del diez por ciento a todos sus artículos. Se requiere extraer únicamente los valores numéricos actualizados para sincronizarlos con la pasarela de pagos.
+
+Scala: 
+
+``` sacala
+val preciosDescuento = productos.map(p => p.precio * 0.90)
+```
+
+Java:
+
+``` java
+List<Double> preciosDescuento = productos.stream()
+    .map(p -> p.getPrecio() * 0.90)
+    .collect(Collectors.toList());
+```
+
+Python
+
+``` python
+precios_descuento = list(map(lambda p: p.precio * 0.90, productos))
+```
+
+Salida de las tres versiones: Un arreglo numérico con los valores 1080.0, 765.0, 899.1, 810.0, 540.0, 225.0, 22.5, 270.0, 108.0 y 45.0.
+
+
+**3. Extremos**
+
+Situación real: El departamento de marketing solicita encontrar el artículo más costoso de todo el catálogo para promocionarlo en una campaña publicitaria enfocada en un público exclusivo.
+
+Scala: 
+
+``` sacala
+val masCaro = productos.maxBy(p => p.precio)
+```
+
+Java:
+
+``` java
+Producto masCaro = productos.stream()
+    .max(Comparator.comparing(Producto::getPrecio))
+    .orElse(null);
+```
+
+Python
+
+``` python
+mas_caro = max(productos, key=lambda p: p.precio)
+```
+
+Salida de las tres versiones: El objeto completo correspondiente a la Laptop X.
+
+
+**4. Acumulación**
+
+Situación real: El equipo contable necesita calcular la inversión de capital total que la empresa tiene inmovilizada en su bodega. Para lograrlo se debe multiplicar el precio por la cantidad en bodega de cada artículo y luego sumar todos esos subtotales en una sola cifra final.
+
+Scala: 
+
+``` sacala
+val valorTotal = productos.foldLeft(0.0)((acumulador, p) => acumulador + p.precio * p.stock)
+```
+
+Java:
+
+``` java
+Double valorTotal = productos.stream()
+    .map(p -> p.getPrecio() * p.getStock())
+    .reduce(0.0, (acumulador, subtotal) -> acumulador + subtotal);
+```
+
+Python
+
+``` python
+from functools import reduce
+valor_total = reduce(lambda acc, p: acc + p.precio * p.stock, productos, 0.0)
+```
+
+Salida de las tres versiones: El valor numérico total 45717.0 calculado de forma idéntica en los tres lenguajes.
+
+## Parte 4: Ampliar: cuatro operaciones nuevas
+
+Las siguientes cuatro operaciones de Scala no fueron abordadas en las clases teóricas, pero resultan fundamentales para resolver problemas de agrupamiento y depuración sobre listas de datos.
+
+### 4.2 Fichas de operaciones
+
+**1. Operación groupBy**
+
+Qué hace: Agrupa los elementos de la lista creando un diccionario donde las claves son el criterio evaluado y los valores son listas de los elementos que cumplen ese criterio.
+
+Función anónima: Recibe una lambda que toma un elemento de la lista y devuelve un valor particular que servirá como clave de agrupación.
+
+Ejemplo en Scala:
+
+``` scala
+val porCategoria = productos.groupBy(p => p.categoria)
+```
+
+Problema que resuelve: Agrupar todos los productos del inventario bajo su respectiva categoría para generar subreportes departamentales. Resuelve un problema de transformación y estructuración de datos.
+
+
+**2. Operación sortBy**
+
+Qué hace: Ordena la lista original basándose en una propiedad o atributo específico proporcionado mediante una regla interna.
+
+Función anónima: Recibe una lambda que toma el elemento de la colección y devuelve la propiedad numérica o de texto por la que se ordenará de forma ascendente.
+
+Ejemplo en Scala:
+
+``` scala
+val ordenados = productos.sortBy(p => p.precio)
+```
+
+Problema que resuelve: Mostrar a un usuario de la tienda en línea un catálogo de productos ordenados del precio más barato al más caro. Resuelve un problema clásico de ordenamiento.
+
+
+**3. Operación partition**
+
+Qué hace: Divide la lista original en exactamente dos listas independientes agrupadas en una estructura doble, basándose estrictamente en una condición lógica. La primera lista contiene los elementos que cumplen la condición y la segunda los que no.
+
+Función anónima: Recibe una lambda conocida como predicado, la cual evalúa un elemento de la lista y devuelve obligatoriamente un valor booleano verdadero o falso.
+
+Ejemplo en Scala:
+
+``` scala
+val particion = productos.partition(p => p.precio >= 600.0)
+```
+
+Problema que resuelve: Separar el inventario en productos de gama premium y gama estándar mediante un solo recorrido de la lista para calcular impuestos diferenciados. Resuelve un problema de selección múltiple.
+
+
+**4. Operación distinctBy**
+
+Qué hace: Extrae elementos únicos de una lista eliminando duplicados basándose únicamente en el campo especificado y reteniendo el primer elemento que encuentra.
+
+Función anónima: Recibe una lambda que toma el elemento de la colección y devuelve el atributo específico que se evaluará para buscar colisiones o duplicados.
+
+Ejemplo en Scala:
+
+``` scala
+val representativos = productos.distinctBy(p => p.categoria)
+```
+
+Problema que resuelve: Extraer un solo producto de muestra por cada categoría disponible en la tienda para tomar fotografías de portada para el sitio web. Resuelve un problema de depuración.
+
+
+### 4.3 Combinar operaciones
+
+Pregunta sobre la lista de objetos: ¿Cómo separo exclusivamente los accesorios y periféricos en dos inventarios distintos según si cuestan cincuenta dólares o más, asegurándome de que dentro de cada sublista los artículos aparezcan ordenados de menor a mayor precio?
+
+Cadena de operaciones:
+
+``` scala
+val agrupados = productos
+  .filter(p => p.categoria == "Accesorios" || p.categoria == "Periféricos")
+  .sortBy(p => p.precio)
+  .partition(p => p.precio >= 50.0)
+```
+
+Explicación de cada paso:
+
+1. filter: Esta operación vista en clase se ejecuta primero para aislar del total de los diez productos únicamente aquellos que pertenecen al grupo de accesorios o periféricos, descartando todo lo demás.
+
+2. sortBy: Esta operación nueva toma esa sublista recién filtrada y la organiza en orden ascendente según el campo del precio numérico.
+
+3. partition: Esta operación nueva recibe la lista ya ordenada y la corta en dos listas distintas agrupadas conjuntamente. La primera contiene los que cuestan cincuenta o más y la segunda los menores a cincuenta. Al aplicarse al final, ambas sublistas resultantes heredan intacto el orden establecido en el paso anterior.
+
